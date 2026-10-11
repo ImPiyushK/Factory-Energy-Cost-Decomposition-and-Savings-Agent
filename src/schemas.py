@@ -54,15 +54,20 @@ class Recommendation(BaseModel):
     payback_months: list[float] = Field(..., min_length=2, max_length=2)
     saving_kwh_per_year: list[float] = Field(..., min_length=2, max_length=2)
     saving_money_per_year: list[float] = Field(..., min_length=2, max_length=2)
-    saving_co2e_t_per_year: list[float] = Field(..., min_length=2, max_length=2)
+    # Optional by documented contract extension: omitted when no emission factor is
+    # provided by the data pack or configuration (dependency flagged, never invented).
+    saving_co2e_t_per_year: Optional[list[float]] = Field(None, min_length=2, max_length=2)
     estimated_impact: str  # human-readable summary of the computed ranges above
 
     @model_validator(mode="after")
     def _ordered(self):
-        for k in ("payback_months", "saving_kwh_per_year", "saving_money_per_year", "saving_co2e_t_per_year"):
+        for k in ("payback_months", "saving_kwh_per_year", "saving_money_per_year"):
             lo, hi = getattr(self, k)
             if lo > hi:
                 raise ValueError(f"{k} must be [low, high]")
+        co2e = self.saving_co2e_t_per_year
+        if co2e is not None and co2e[0] > co2e[1]:
+            raise ValueError("saving_co2e_t_per_year must be [low, high]")
         return self
 
 
