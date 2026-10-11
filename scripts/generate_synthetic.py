@@ -95,13 +95,15 @@ def generate(seed: int, outdir: Path) -> dict:
             shift, vol = "normal", (VOL_Q2_WEEKDAY if is_q2 else VOL_Q3_WEEKDAY)
         vol *= float(rng.normal(1.0, 0.03))
         vol = max(0.0, round(vol, 0))
-        mix = MIX_Q2 if is_q2 else MIX_Q3
-        # integer unit split with largest-remainder rounding
+        mean_mix = MIX_Q2 if is_q2 else MIX_Q3
+        # realistic daily mix variation (quarter means stay at MIX_Q2/MIX_Q3):
+        # within-quarter share jitter identifies per-product intensities for the baseline model
+        jitter = {p: float(rng.normal(0.0, 0.05)) for p in PRODUCTS}
+        raw_sh = {p: max(0.05, mean_mix[p] + jitter[p]) for p in PRODUCTS}
+        sh_tot = sum(raw_sh.values())
+        mix = {p: raw_sh[p] / sh_tot for p in PRODUCTS}
         raw = np.array([vol * mix[p] for p in PRODUCTS])
-        units = np.floor(raw).astype(int)
-        rem = int(round(vol - units.sum()))
-        for i in np.argsort(-(raw - units))[:rem]:
-            units[i] += 1
+        units = np.floor(raw * 10) / 10.0  # tenths of a unit; fractions keep rank full
         for p, u in zip(PRODUCTS, units):
             prod_rows.append({"date": d.strftime("%Y-%m-%d"), "product_id": p,
                               "volume": float(u), "shift": shift,
