@@ -50,7 +50,7 @@ def _is_derived(cand: float, allow: list[float], tol_fn) -> bool:
                 return True
             if a != 0 and abs(cand - a / b) <= tol_fn(max(abs(a), abs(b))):
                 return True
-            if b != 0 and abs(cand - a / b * 100.0) <= tol_fn(max(abs(a), max(b), 1.0)):
+            if b != 0 and abs(cand - a / b * 100.0) <= tol_fn(max(abs(a), abs(b), 1.0)):
                 return True
     return False
 

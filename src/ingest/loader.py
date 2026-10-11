@@ -79,8 +79,13 @@ def _detect_cumulative(v: pd.Series) -> bool:
     if len(v) < 50:
         return False
     d = v.diff().dropna()
+    neg = int((d < 0).sum())
     nonneg = (d >= 0).mean()
-    return bool(nonneg >= 0.995 and (v.max() > 10 * d.abs().median() + 1))
+    # a cumulative counter is ~monotone apart from rare resets (interval consumption
+    # data has many negative step-to-step deltas, so high nonneg + few resets separates them)
+    monotone = (nonneg >= 0.995 and neg / max(1, len(d)) < 0.01) or \
+               (len(d) <= 120 and neg <= 2 and nonneg >= 0.95)
+    return bool(monotone and (v.max() > 10 * d.abs().median() + 1))
 
 
 def clean_meter(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int], list[tuple[int, str, str]]]:

@@ -165,11 +165,11 @@ def _robust_fit(X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray, i
     return np.asarray(r1.params), resid, 0
 
 
-def fit_baseline(daily_pooled: pd.DataFrame, products: list[str]) -> tuple[LinearSpec, dict]:
+def fit_baseline(daily_pooled: pd.DataFrame, products: list[str] | None = None) -> tuple[LinearSpec, dict]:
     """Fit the hybrid model on the pooled daily frame; return spec + quality stats."""
     d = daily_pooled.copy()
     all_products = [c.replace("units_", "") for c in _units_cols(d)]
-    products = products or all_products
+    products = (products or all_products)
     seen = [p for p in products if d.get(f"units_{p}", pd.Series(0, index=d.index)).fillna(0).sum() > 0]
     if not seen:
         raise ValueError("no product volumes available to train the baseline")
