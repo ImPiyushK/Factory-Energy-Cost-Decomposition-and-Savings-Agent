@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     night_start: int = 22
     night_end: int = 6
     emission_factor_kg_per_kwh: float | None = None  # None => must come from data pack or be flagged
+    decomp_method: str = "shapley"      # shapley (Config A) | sequential (Config B) - eval comparisons
+    n_bootstrap: int = 60               # weekly block bootstrap draws
 
     # --- API ---
     app_version: str = "1.0.0"

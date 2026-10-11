@@ -63,9 +63,11 @@ def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
         payload = run_graph(req.question, req.period, req.compare_to)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"analysis failed: {type(e).__name__}: {e}") from e
+    # the API response carries the contract fields; verified internals stay in the trace
+    api_payload = {k: v for k, v in payload.items() if k != "vres"}
     try:
-        return AnalyzeResponse(**payload)
-    except Exception as e:  # contract violation -> surfacing the response internally
+        return AnalyzeResponse(**api_payload)
+    except Exception as e:  # contract violation -> internal error with the run_id for audit
         raise HTTPException(status_code=500, detail=f"response contract violation: {e}; "
                                                     f"run_id={payload.get('run_id')} (trace available)") from e
 

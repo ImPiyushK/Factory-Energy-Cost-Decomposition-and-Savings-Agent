@@ -376,7 +376,7 @@ def persist(state: AgentState) -> AgentState:
                    "completion": (state.get("llm") or {}).get("completion_tokens", 0)},
         "errors": errors,
         "faithfulness": state.get("faithfulness") or {"ok": None, "mode": "none"},
-        "final_answer": engine.strip_vres(payload),
+        "final_answer": payload,  # full payload incl. verified internals (audit); API strips
         "latency_ms": int(total_ms),
     }
     from src.store import db as store_db
