@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Env & secrets
+.env
+*.db
+*.sqlite3
+
+# Data: loaded/generated datasets are reproducible; keep ground truth out of git? No:
+# ground truth for our OWN synthetic data must be committed (eval depends on it).
+# Official hackathon data pack stays untracked until provided.
+data/official/
+!data/official/.gitkeep
+
+# App artifacts
+exports/
+.eval_runs/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store

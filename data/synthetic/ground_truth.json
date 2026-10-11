@@ -1,0 +1,68 @@
+{
+  "seed": 42,
+  "periods": {
+    "baseline": "2026-Q2",
+    "current": "2026-Q3"
+  },
+  "meters": {
+    "main": "MAIN",
+    "sub": [
+      "compressors_1",
+      "compressors_2",
+      "cooling",
+      "furnace_1",
+      "furnace_2",
+      "lighting",
+      "line_1",
+      "line_2"
+    ]
+  },
+  "leak": {
+    "meter": "compressors_2",
+    "start": "2026-08-10T00:00:00+00:00",
+    "kw": 9.0
+  },
+  "tariff_change": {
+    "effective": "2026-07-20",
+    "prices": {
+      "offpeak": [
+        0.12,
+        0.135
+      ],
+      "shoulder": [
+        0.18,
+        0.2
+      ],
+      "peak": [
+        0.24,
+        0.27
+      ]
+    }
+  },
+  "mix_shift": {
+    "2026-Q2": {
+      "A": 0.4,
+      "B": 0.35,
+      "C": 0.25
+    },
+    "2026-Q3": {
+      "A": 0.52,
+      "B": 0.3,
+      "C": 0.18
+    }
+  },
+  "volume_ratio_q3_vs_q2_weekday": 1.05,
+  "heatwave": [
+    "2026-08-10",
+    "2026-08-20"
+  ],
+  "holidays": {
+    "correct": "2026-05-01",
+    "mislabeled_as_normal_shift": "2026-08-15"
+  },
+  "meter_reset": "2026-07-15 02:00",
+  "sub_meter_coverage_target": 0.965,
+  "missing_intervals_fraction": 0.003,
+  "emission_factor_kg_per_kwh": 0.42,
+  "note": "Leak kW is constant across all hours; full-year leak = kw * 8760 kWh. Off-production leak is measured from data by the evaluation harness."
+}
