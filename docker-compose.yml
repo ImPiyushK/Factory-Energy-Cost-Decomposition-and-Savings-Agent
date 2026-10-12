@@ -7,8 +7,9 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data               # SQLite store + data packs live here (from host)
-    env_file:
-      - .env
+    # To use a hosted/local LLM, create .env from .env.example and add:
+    #   env_file:
+    #     - .env
     extra_hosts:
       - "host.docker.internal:host-gateway"   # lets OLLAMA reach an Ollama daemon on the host
     healthcheck:
@@ -27,8 +28,6 @@ services:
       - "8501:8501"
     volumes:
       - ./data:/app/data
-    env_file:
-      - .env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
