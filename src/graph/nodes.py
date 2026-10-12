@@ -374,6 +374,7 @@ def persist(state: AgentState) -> AgentState:
         faith_in = {**validate_numbers(state.get("summary", ""), allow2),
                     "mode": "template_no_llm"}
 
+    steps_for_trace = steps + [{"node": "persist", "ms": 0.0, "status": "ok"}]
     trace = {
         "run_id": run_id,
         "created_at": _now(),
@@ -382,7 +383,7 @@ def persist(state: AgentState) -> AgentState:
                    "intent": state.get("intent")},
         "data_fingerprints": fingerprints,
         "validation": validation,
-        "steps": steps,
+        "steps": steps_for_trace,
         "tool_calls": state.get("tool_calls") or [],
         "model": {"provider": cfg.llm_provider, "model": cfg.llm_model,
                   "mock": cfg.mock_llm, **(state.get("llm") or {})},

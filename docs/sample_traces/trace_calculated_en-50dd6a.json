@@ -1,0 +1,206 @@
+{
+  "run_id": "en-50dd6a",
+  "created_at": "2026-10-12T00:19:56+00:00",
+  "question": "Total kWh consumed in 2026-Q3?",
+  "params": {
+    "period": "2026-Q3",
+    "compare_to": null,
+    "intent": "numeric"
+  },
+  "data_fingerprints": {
+    "production": {
+      "version": 1,
+      "sha256": "8b4864a2fb3472fa",
+      "row_count": 549,
+      "loaded_at": "2026-10-12T00:17:59+00:00"
+    },
+    "weather": {
+      "version": 1,
+      "sha256": "44ad80daccb9b7fe",
+      "row_count": 183,
+      "loaded_at": "2026-10-12T00:17:59+00:00"
+    },
+    "tariff": {
+      "version": 2,
+      "sha256": "d54efec88449352d",
+      "row_count": 10,
+      "loaded_at": "2026-10-12T00:18:54+00:00"
+    },
+    "meter_15min": {
+      "version": 2,
+      "sha256": "8bd10590ad4a385f",
+      "row_count": 158112,
+      "loaded_at": "2026-10-12T00:18:55+00:00"
+    }
+  },
+  "validation": {
+    "checks": [
+      {
+        "check": "sub_meter_reconciliation",
+        "tolerance": 0.05,
+        "status": "pass",
+        "detail": "sub-meters sum to 96.7% of main (drift 3.3%, tolerance 5%). Coverage is disclosed, never silently rescaled.",
+        "metrics": {
+          "drift": 0.033,
+          "coverage": 0.967,
+          "main_kwh": 2792707.7,
+          "subs_kwh": 2700675.5
+        }
+      },
+      {
+        "check": "negative_energy_and_resets",
+        "status": "pass",
+        "detail": "0 negative values remain; 0 meter resets rebased; 0 negative rows rejected (logged).",
+        "metrics": {
+          "negative_remaining": 0,
+          "resets_rebased": 0,
+          "negatives_rejected": 0
+        }
+      },
+      {
+        "check": "timestamp_regularity",
+        "status": "pass",
+        "detail": "single time zone (UTC); grid = 15 min; 0 off-grid stamps; 31 missing intervals left unfilled; span 183 days.",
+        "metrics": {
+          "off_grid": 0,
+          "missing_intervals": 31,
+          "span_days": 183.0
+        }
+      },
+      {
+        "check": "tariff_coverage",
+        "status": "pass",
+        "detail": "10 tariff rows; 0 overlapping intervals; full coverage of 2026-04-01..2026-09-30 (union of 1 merged interval(s)).",
+        "metrics": {
+          "rows": 10,
+          "overlaps": 0,
+          "covered": true
+        }
+      },
+      {
+        "check": "production_shift_calendar",
+        "status": "pass",
+        "detail": "183 production days; 0 holiday(s) logged as a normal shift; 0 zero-volume day(s) marked as a production shift (handled as non-production for idle analysis and flagged).",
+        "metrics": {
+          "days": 183,
+          "holiday_as_shift": [],
+          "zero_volume_shift_days": 0
+        }
+      },
+      {
+        "check": "data_card_conformance",
+        "status": "pass",
+        "detail": "matches declared card.",
+        "metrics": {
+          "mismatches": []
+        }
+      }
+    ],
+    "blockers": [],
+    "warnings": [],
+    "corrections": {},
+    "summary": {
+      "pass": 6,
+      "warn": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    "ok": true
+  },
+  "steps": [
+    {
+      "node": "classify",
+      "ms": 0.0,
+      "status": "ok",
+      "output": {
+        "intent": "numeric"
+      }
+    },
+    {
+      "node": "context",
+      "ms": 1764.4,
+      "status": "ok"
+    },
+    {
+      "node": "compute",
+      "ms": 79.1,
+      "status": "ok",
+      "output": {
+        "answer_type": "calculated"
+      }
+    },
+    {
+      "node": "persist",
+      "ms": 0.0,
+      "status": "ok"
+    }
+  ],
+  "tool_calls": [
+    {
+      "tool": "calculated_tool",
+      "args": {
+        "kind": "energy_in_period"
+      },
+      "result_digest": {
+        "value": 1567096.4
+      }
+    }
+  ],
+  "model": {
+    "provider": "mock",
+    "model": "mock-template",
+    "mock": true
+  },
+  "llm_calls": 0,
+  "tokens": {
+    "prompt": 0,
+    "completion": 0
+  },
+  "errors": [],
+  "faithfulness": {
+    "ok": true,
+    "n_numbers_checked": 4,
+    "n_derived_ok": 0,
+    "violations": [],
+    "mode": "template_no_llm"
+  },
+  "final_answer": {
+    "answer_type": "calculated",
+    "summary": "MAIN kWh in 2026-Q3: 1,567,096.4 kWh. Details: {\"by_meter\": {\"MAIN\": 1567096.4}}",
+    "bridge": null,
+    "recommendations": [],
+    "assumptions": [
+      "missing intervals are excluded (documented data-quality policy)"
+    ],
+    "limitations": [],
+    "data_quality": null,
+    "computed_change_pct": null,
+    "vres": {
+      "data_quality": null,
+      "calc": {
+        "question_kind": "energy_in_period",
+        "period": "2026-Q3",
+        "scenario": "MAIN kWh in 2026-Q3",
+        "value": 1567096.4,
+        "unit": "kWh",
+        "detail": {
+          "by_meter": {
+            "MAIN": 1567096.4
+          }
+        },
+        "assumptions": [
+          "missing intervals are excluded (documented data-quality policy)"
+        ],
+        "evidence_refs": [
+          "meter_15min:2026-Q3"
+        ]
+      },
+      "assumptions": [
+        "missing intervals are excluded (documented data-quality policy)"
+      ]
+    },
+    "run_id": "en-50dd6a",
+    "trace_hint": "GET /trace/en-50dd6a"
+  },
+  "latency_ms": 1843
+}
