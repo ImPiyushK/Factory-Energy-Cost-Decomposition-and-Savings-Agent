@@ -7,6 +7,8 @@ __pycache__/
 # Env & secrets
 .env
 *.db
+*.db-shm
+*.db-wal
 *.sqlite3
 
 # Data: loaded/generated datasets are reproducible; keep ground truth out of git? No:
