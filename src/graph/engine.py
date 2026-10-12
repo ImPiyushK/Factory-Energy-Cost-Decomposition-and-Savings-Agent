@@ -160,6 +160,8 @@ def result_envelope(
     if answer_type == "decomposition":
         payload["bridge"] = [{"cause": b["cause"], "pct_points": b["pct_points"], "range": b["range"]}
                              for b in vres.get("bridge", [])]
+        # spec §6.1 sample: decomposition answers may carry the evidence-backed recommendations
+        payload["recommendations"] = vres.get("savings", {}).get("recommendations", [])
     elif answer_type == "recommendation":
         payload["recommendations"] = vres.get("savings", {}).get("recommendations", [])
     return payload
