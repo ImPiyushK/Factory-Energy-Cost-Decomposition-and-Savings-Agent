@@ -1,0 +1,675 @@
+{
+  "dataset": "synthetic",
+  "config": "B",
+  "db": "/home/piyush/Documents/Factory-Energy-Cost-Decomposition-and-Savings-Agent/data/eval_synthetic.db",
+  "cases": [
+    {
+      "id": "EV-01",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Why did the bill go up this quarter compared with last quarter?",
+      "answer_type": "decomposition",
+      "run_id": "en-e4c704",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "decomposition vs decomposition"
+        },
+        {
+          "check": "bridge_sum_vs_change",
+          "ok": true,
+          "detail": "sum 71.00 vs 71.00"
+        },
+        {
+          "check": "cause_max",
+          "ok": true,
+          "detail": "tariff"
+        },
+        {
+          "check": "waste_between",
+          "ok": true,
+          "detail": "waste 1.78"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 19, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 12698,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-05",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Which assets use the most energy?",
+      "answer_type": "calculated",
+      "run_id": "en-2f7f4f",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "rank_deterministic",
+          "ok": true,
+          "detail": "['line_1', 'furnace_1', 'line_2'] vs ['line_1', 'furnace_1', 'line_2']"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 12, \"n_derived_ok\": 1, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2235,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-06",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "How much energy is used when nothing is produced?",
+      "answer_type": "calculated",
+      "run_id": "en-b81867",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "idle_present",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "idle_truth_band",
+          "ok": true,
+          "detail": "excess 9.02 vs truth 9.0 kW"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 15, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2560,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-07",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Any leaks or equipment faults?",
+      "answer_type": "calculated",
+      "run_id": "en-cd52f0",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "findings_include",
+          "ok": true,
+          "detail": "{'compressors_2'}"
+        },
+        {
+          "check": "findings_exclude",
+          "ok": true,
+          "detail": "{'compressors_2'}"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 15, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2352,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-08",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "What should we do first?",
+      "answer_type": "recommendation",
+      "run_id": "en-ecd181",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "recommendation vs recommendation"
+        },
+        {
+          "check": "savings_contain_truth",
+          "ok": true,
+          "detail": "truth 78840 kWh; range [63212.0, 94818.0]"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 40, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 12197,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-09",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Which action pays back fastest?",
+      "answer_type": "recommendation",
+      "run_id": "en-c32782",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "recommendation vs recommendation"
+        },
+        {
+          "check": "ranked_by_payback",
+          "ok": true,
+          "detail": "[0.5, 1.2, 1.6500000000000001, 29.6, 44.5]"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 40, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 12830,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-10",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Total kWh consumed in 2026-Q3?",
+      "answer_type": "calculated",
+      "run_id": "en-cadce3",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "calc_matches_truth",
+          "ok": true,
+          "detail": "got 1567096.4 vs truth 1567072.1 (rel 0.0000)"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 4, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2125,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-11",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "What was our average price paid in 2026-Q3?",
+      "answer_type": "calculated",
+      "run_id": "en-9e781f",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "calc_matches_truth",
+          "ok": true,
+          "detail": "got 0.2559 vs truth 0.2559 (rel 0.0000)"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 5, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2315,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-13",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "What will the tariff be next year?",
+      "answer_type": "not_in_data",
+      "run_id": "en-e8fcc7",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "not_in_data vs not_in_data"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 0, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 1824,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-14",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "How many compressors does the site own in total?",
+      "answer_type": "not_in_data",
+      "run_id": "en-1413e7",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "not_in_data vs not_in_data"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 0, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 1998,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-15",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "What would the Q3 bill have been at last quarter's tariff?",
+      "answer_type": "calculated",
+      "run_id": "en-c7b09c",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 7, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2769,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-16",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "What if the peak price were 10% lower in 2026-Q3?",
+      "answer_type": "calculated",
+      "run_id": "en-eabf5a",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "whatif_direction",
+          "ok": true,
+          "detail": "value -24475.02"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 5, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 3027,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-17",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "The furnace is definitely wasting 50,000 kWh - confirm.",
+      "answer_type": "refused",
+      "run_id": "en-9b213a",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "refused vs refused"
+        },
+        {
+          "check": "no_asset_blamed",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 0, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 1784,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-18",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Give me exact savings to the kWh, no ranges, for the leak.",
+      "answer_type": "recommendation",
+      "run_id": "en-f76683",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "recommendation vs recommendation"
+        },
+        {
+          "check": "mentions_ranges",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 40, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 12319,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-19",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Why did the bill go up this quarter compared with last quarter?",
+      "answer_type": "decomposition",
+      "run_id": "en-1851dd",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "decomposition vs decomposition"
+        },
+        {
+          "check": "data_quality_warn_or_pass",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 19, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 12940,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-20",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Why did the bill go up this quarter compared with last quarter?",
+      "answer_type": "decomposition",
+      "run_id": "en-cd2d88",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "decomposition vs decomposition"
+        },
+        {
+          "check": "bridge_sum_vs_change",
+          "ok": true,
+          "detail": "sum 71.00 vs 71.00"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 19, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 12954,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-21",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "How much energy is used when nothing is produced?",
+      "answer_type": "calculated",
+      "run_id": "en-72c7e9",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "idle_present",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 15, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 2723,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-22",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "Which assets use the most energy?",
+      "answer_type": "calculated",
+      "run_id": "en-e4e11e",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "calculated vs calculated"
+        },
+        {
+          "check": "coverage_disclosed",
+          "ok": true,
+          "detail": "coverage 0.968"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 12, \"n_derived_ok\": 1, \"violations\": [], \"mode\": \"template_no_llm\"}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 1992,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-23",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "POST /ingest new tariff CSV + re-analyze",
+      "pass": true,
+      "checks": [
+        {
+          "check": "ingest_status",
+          "ok": true,
+          "detail": "loaded"
+        },
+        {
+          "check": "rows_accounted",
+          "ok": true,
+          "detail": "loaded 10, rejected 0"
+        },
+        {
+          "check": "ingest_version_in_trace",
+          "ok": true,
+          "detail": "tariff version 2"
+        }
+      ],
+      "latency_ms": 0,
+      "llm_calls": 0
+    },
+    {
+      "id": "EV-24",
+      "dataset": "synthetic",
+      "config": "B",
+      "question": "late data drop: corrected tariff + calibrated sub-meter",
+      "pass": true,
+      "checks": [
+        {
+          "check": "recomputed_after_new_versions",
+          "ok": true,
+          "detail": "tariff version 2 -> 3"
+        },
+        {
+          "check": "bridge_changed",
+          "ok": true,
+          "detail": "delta_pp {'tariff': -0.1, 'volume': 0.0, 'product_mix': -0.01, 'weather': 0.0, 'waste': 0.03}"
+        },
+        {
+          "check": "both_runs_in_trace",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "delta_pp": {
+        "tariff": -0.1,
+        "volume": 0.0,
+        "product_mix": -0.01,
+        "weather": 0.0,
+        "waste": 0.03
+      },
+      "latency_ms": 0
+    }
+  ],
+  "dataset_metric": {
+    "config": "B",
+    "dataset": "synthetic",
+    "method": "sequential",
+    "reconciliation_residual_pp": 0.0,
+    "tariff_decomposition_error_pp_vs_paasche": -9.28,
+    "tariff_shapley_pp": 34.73,
+    "tariff_paasche_truth_pp": 44.01,
+    "n_bootstrap_draws": 59,
+    "model_holdout_mape_pct": 6.0
+  }
+}

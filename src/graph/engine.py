@@ -78,11 +78,13 @@ def resolve_periods(period: str | None, compare_to: str | None, quarters: list[s
     return p, compare_to
 
 
-def decomp_tool(ctx: dict, period: str, compare_to: str, method: str = "shapley",
-                n_boot: int = 60) -> dict:
+def decomp_tool(ctx: dict, period: str, compare_to: str, method: str | None = None,
+                n_boot: int | None = None) -> dict:
+    from src.config import settings as cfg
     f = ctx["frames"]
     return dc.decompose(f["meter_15min"], f["tariff"], f["production"], f["weather"],
-                        period, compare_to, method=method, n_boot=n_boot)
+                        period, compare_to, method=(method or cfg.decomp_method),
+                        n_boot=(n_boot or cfg.n_bootstrap))
 
 
 def assets_tool(ctx: dict, period: str) -> dict:

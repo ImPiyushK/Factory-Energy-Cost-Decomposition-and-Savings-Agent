@@ -87,8 +87,9 @@ def template_brief(vres: dict, question: str, answer_type: str) -> str:
         return "Verified results are available for this question type."
     if answer_type == "not_in_data":
         return ("The data available to this system does not contain the answer to that question, "
-                "so I will not guess. Available data: meter readings (15-min), tariffs, production, "
-                "weather for the loaded quarters - ask about bills, assets, waste or savings.")
+                "so I will not guess. Available data: quarter-hourly meter readings, tariffs, "
+                "production and weather for the loaded quarters - ask about bills, assets, "
+                "waste or savings.")
     if answer_type == "clarification_needed":
         return "The question is ambiguous (which period? which asset?). Please specify the comparison period."
     if answer_type == "refused":

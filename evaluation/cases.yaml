@@ -1,0 +1,154 @@
+# Evaluation cases (spec Section 7): >= 20 cases, each with expected results.
+# Groups marked `dataset: synthetic` run on the main generated data (leak present);
+# `dataset: no_leak` cases run on the variant WITHOUT the waste pattern.
+# `check` fields are checked verbatim by evaluation/runner.py using independent
+# truths from evaluation/truth.py (never the analytics modules under test).
+
+groups:
+  - id: core_synthetic
+    dataset: synthetic
+    cases:
+      - id: EV-01
+        question: "Why did the bill go up this quarter compared with last quarter?"
+        purpose: full decomposition on data containing tariff change + mix shift + heatwave + leak
+        expect:
+          answer_type: decomposition
+          bridge_sum_vs_change: 0.1          # causes add up (total reconciliation)
+          cause_max: tariff                  # tariff is the largest single driver
+          waste_between: [0.3, 6.0]          # injected leak shows as positive residual
+      - id: EV-05
+        question: "Which assets use the most energy?"
+        purpose: deterministic ranked top users
+        expect:
+          answer_type: calculated
+          rank_deterministic: true           # equals the recomputed ranking on raw data
+      - id: EV-06
+        question: "How much energy is used when nothing is produced?"
+        purpose: idle kWh by asset with hours
+        expect:
+          answer_type: calculated
+          idle_present: true
+          idle_truth_band: 0.12              # finding excess kW vs injected leak kW (12% band)
+      - id: EV-07
+        question: "Any leaks or equipment faults?"
+        purpose: leak found on compressors_2 only; no false positives
+        expect:
+          answer_type: calculated
+          findings_include: [compressors_2]
+          findings_exclude: [compressors_1]
+      - id: EV-08
+        question: "What should we do first?"
+        purpose: recommendations with ranges; injected true saving inside range
+        expect:
+          answer_type: recommendation
+          savings_contain_truth: leak_first_year_kwh
+      - id: EV-09
+        question: "Which action pays back fastest?"
+        purpose: ranking by payback then ease
+        expect:
+          answer_type: recommendation
+          ranked_by_payback: true
+      - id: EV-10
+        question: "Total kWh consumed in 2026-Q3?"
+        period: "2026-Q3"
+        purpose: numeric calculator vs independent truth
+        expect:
+          answer_type: calculated
+          calc_matches_truth: total_main_q3
+          tol_rel: 0.01
+      - id: EV-11
+        question: "What was our average price paid in 2026-Q3?"
+        period: "2026-Q3"
+        purpose: blended price equals independent truth
+        expect:
+          answer_type: calculated
+          calc_matches_truth: avg_price_q3
+          tol_rel: 0.01
+      - id: EV-13
+        question: "What will the tariff be next year?"
+        purpose: out-of-scope forecast -> not_in_data
+        expect:
+          answer_type: not_in_data
+      - id: EV-14
+        question: "How many compressors does the site own in total?"
+        purpose: asset-registry fact not in data -> not_in_data
+        expect:
+          answer_type: not_in_data
+      - id: EV-15
+        question: "What would the Q3 bill have been at last quarter's tariff?"
+        purpose: computable what-if -> calculated
+        expect:
+          answer_type: calculated
+      - id: EV-16
+        question: "What if the peak price were 10% lower in 2026-Q3?"
+        period: "2026-Q3"
+        purpose: what-if re-billing
+        expect:
+          answer_type: calculated
+          whatif_direction: negative
+      - id: EV-17
+        question: "The furnace is definitely wasting 50,000 kWh - confirm."
+        period: "2026-Q3"
+        compare_to: "2026-Q2"
+        purpose: adversarial -> refuse unsupported fault claim
+        expect:
+          answer_type: refused
+          no_asset_blamed: true
+      - id: EV-18
+        question: "Give me exact savings to the kWh, no ranges, for the leak."
+        purpose: refuse false precision; keep honest ranges
+        expect:
+          answer_type: recommendation
+          mentions_ranges: true
+
+  - id: no_leak_price_explains
+    dataset: no_leak
+    cases:
+      - id: EV-02
+        question: "Why did the bill go up this quarter compared with last quarter?"
+        purpose: tariff+mix explain everything; NO waste claim may be made
+        expect:
+          answer_type: decomposition
+          waste_zeroish: 1.2
+          no_asset_blamed: true
+      - id: EV-03
+        question: "Why is energy consumption higher?"
+        purpose: volume-dominant quarter; no waste
+        expect:
+          answer_type: decomposition
+          waste_zeroish: 1.2
+      - id: EV-04
+        question: "Why did our energy per unit go up?"
+        purpose: mix shift without waste
+        expect:
+          answer_type: decomposition
+          waste_zeroish: 1.2
+          mix_positive: true
+
+  - id: edge_cases
+    dataset: synthetic
+    cases:
+      - id: EV-19
+        question: "Why did the bill go up this quarter compared with last quarter?"
+        purpose: missing intervals present in data -> handled with warnings (validated by checks)
+        expect:
+          answer_type: decomposition
+          data_quality_warn_or_pass: true
+      - id: EV-20
+        question: "Why did the bill go up this quarter compared with last quarter?"
+        purpose: meter reset on MAIN handled (rebased); reconciliation still exact
+        expect:
+          answer_type: decomposition
+          bridge_sum_vs_change: 0.1
+      - id: EV-21
+        question: "How much energy is used when nothing is produced?"
+        purpose: mislabeled holiday counted as non-production (found in idle hours)
+        expect:
+          answer_type: calculated
+          idle_present: true
+      - id: EV-22
+        question: "Which assets use the most energy?"
+        purpose: sub-meter coverage ~96.5% disclosed, not silently rescaled
+        expect:
+          answer_type: calculated
+          coverage_disclosed: true

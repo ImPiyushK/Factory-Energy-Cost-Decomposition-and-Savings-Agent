@@ -58,9 +58,9 @@ EMISSION_FACTOR = 0.42  # kg CO2e / kWh (declared in the data card)
 TARIFF_Q2 = [("offpeak", 0.120, "00:00", "07:00"), ("offpeak", 0.120, "19:00", "24:00"),
              ("shoulder", 0.180, "07:00", "09:00"), ("peak", 0.240, "09:00", "17:00"),
              ("shoulder", 0.180, "17:00", "19:00")]
-TARIFF_Q3 = [("offpeak", 0.135, "00:00", "07:00"), ("offpeak", 0.135, "19:00", "24:00"),
-             ("shoulder", 0.200, "07:00", "09:00"), ("peak", 0.270, "09:00", "17:00"),
-             ("shoulder", 0.200, "17:00", "19:00")]
+TARIFF_Q3 = [("offpeak", 0.160, "00:00", "07:00"), ("offpeak", 0.160, "19:00", "24:00"),
+             ("shoulder", 0.240, "07:00", "09:00"), ("peak", 0.360, "09:00", "17:00"),
+             ("shoulder", 0.240, "17:00", "19:00")]
 
 MONTH_TEMP = {4: 19.0, 5: 23.0, 6: 28.0, 7: 31.0, 8: 33.0, 9: 28.0}
 
@@ -246,7 +246,8 @@ def generate(seed: int, outdir: Path) -> dict:
         "tolerances": {"sub_meter_reconciliation": 0.05},
     }
     (outdir / "data_card.json").write_text(json.dumps(card, indent=2))
-    shutil.copy(outdir / "data_card.json", ROOT / "data" / "data_card.json")
+    if outdir.resolve() == (ROOT / "data" / "synthetic").resolve():
+        shutil.copy(outdir / "data_card.json", ROOT / "data" / "data_card.json")
     return truth
 
 
@@ -254,10 +255,17 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Generate reproducible synthetic factory data")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default=str(ROOT / "data" / "synthetic"))
+    ap.add_argument("--no-leak", action="store_true",
+                    help="variant WITHOUT the injected waste pattern (for 'price/mix, not "
+                         "machines' evaluation cases)")
     args = ap.parse_args()
+    global LEAK_KW
+    if args.no_leak:
+        LEAK_KW = 0.0
     truth = generate(args.seed, Path(args.out))
     print(json.dumps({"written": args.out, "seed": args.seed,
-                      "leak": truth["leak"]["meter"], "emission_factor": truth["emission_factor_kg_per_kwh"]}, indent=2))
+                      "leak_meter": truth["leak"]["meter"], "leak_kw": LEAK_KW,
+                      "emission_factor": truth["emission_factor_kg_per_kwh"]}, indent=2))
 
 
 if __name__ == "__main__":

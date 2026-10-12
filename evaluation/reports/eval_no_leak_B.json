@@ -1,0 +1,185 @@
+{
+  "dataset": "no_leak",
+  "config": "B",
+  "db": "/home/piyush/Documents/Factory-Energy-Cost-Decomposition-and-Savings-Agent/data/eval_no_leak.db",
+  "cases": [
+    {
+      "id": "EV-02",
+      "dataset": "no_leak",
+      "config": "B",
+      "question": "Why did the bill go up this quarter compared with last quarter?",
+      "answer_type": "decomposition",
+      "run_id": "en-89bbbf",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "decomposition vs decomposition"
+        },
+        {
+          "check": "waste_zeroish",
+          "ok": true,
+          "detail": "waste -0.98"
+        },
+        {
+          "check": "no_asset_blamed",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 18, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 11493,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-03",
+      "dataset": "no_leak",
+      "config": "B",
+      "question": "Why is energy consumption higher?",
+      "answer_type": "decomposition",
+      "run_id": "en-173df1",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "decomposition vs decomposition"
+        },
+        {
+          "check": "waste_zeroish",
+          "ok": true,
+          "detail": "waste -0.98"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 18, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 11623,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-04",
+      "dataset": "no_leak",
+      "config": "B",
+      "question": "Why did our energy per unit go up?",
+      "answer_type": "decomposition",
+      "run_id": "en-21cb1e",
+      "pass": true,
+      "checks": [
+        {
+          "check": "answer_type",
+          "ok": true,
+          "detail": "decomposition vs decomposition"
+        },
+        {
+          "check": "waste_zeroish",
+          "ok": true,
+          "detail": "waste -0.98"
+        },
+        {
+          "check": "mix_positive",
+          "ok": true,
+          "detail": "mix 11.54"
+        },
+        {
+          "check": "faithfulness_ok",
+          "ok": true,
+          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 18, \"retries\": 0}"
+        }
+      ],
+      "notes": [],
+      "latency_ms": 11633,
+      "llm_calls": 0,
+      "tokens": {
+        "prompt": 0,
+        "completion": 0
+      }
+    },
+    {
+      "id": "EV-23",
+      "dataset": "no_leak",
+      "config": "B",
+      "question": "POST /ingest new tariff CSV + re-analyze",
+      "pass": true,
+      "checks": [
+        {
+          "check": "ingest_status",
+          "ok": true,
+          "detail": "loaded"
+        },
+        {
+          "check": "rows_accounted",
+          "ok": true,
+          "detail": "loaded 10, rejected 0"
+        },
+        {
+          "check": "ingest_version_in_trace",
+          "ok": true,
+          "detail": "tariff version 2"
+        }
+      ],
+      "latency_ms": 0,
+      "llm_calls": 0
+    },
+    {
+      "id": "EV-24",
+      "dataset": "no_leak",
+      "config": "B",
+      "question": "late data drop: corrected tariff + calibrated sub-meter",
+      "pass": true,
+      "checks": [
+        {
+          "check": "recomputed_after_new_versions",
+          "ok": true,
+          "detail": "tariff version 2 -> 3"
+        },
+        {
+          "check": "bridge_changed",
+          "ok": true,
+          "detail": "delta_pp {'tariff': -0.1, 'volume': 0.0, 'product_mix': 0.0, 'weather': 0.0, 'waste': 0.03}"
+        },
+        {
+          "check": "both_runs_in_trace",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "delta_pp": {
+        "tariff": -0.1,
+        "volume": 0.0,
+        "product_mix": 0.0,
+        "weather": 0.0,
+        "waste": 0.03
+      },
+      "latency_ms": 0
+    }
+  ],
+  "dataset_metric": {
+    "config": "B",
+    "dataset": "no_leak",
+    "method": "sequential",
+    "reconciliation_residual_pp": 0.0,
+    "tariff_decomposition_error_pp_vs_paasche": -9.03,
+    "tariff_shapley_pp": 34.77,
+    "tariff_paasche_truth_pp": 43.8,
+    "n_bootstrap_draws": 59,
+    "model_holdout_mape_pct": 6.85
+  }
+}

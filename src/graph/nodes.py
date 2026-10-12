@@ -22,7 +22,7 @@ DECOMP_PAT = re.compile(r"\b(why|explain|driver|bridge|what (changed|drove|cause
 RANKING_PAT = re.compile(r"\b(payback|pay back|fastest|rank|ranking|priorit|which action|what should we do first)\b", re.I)
 SAVINGS_PAT = re.compile(r"\b(savings|recommend|what should we do|actions|first)\b", re.I)
 TOP_PAT = re.compile(r"\b(top|biggest|most energy|largest|ranking of assets|which assets)\b", re.I)
-IDLE_PAT = re.compile(r"\b(idle|nothing is produced|no production|non.production|night|weekend|leak|fault|abnormal)\b", re.I)
+IDLE_PAT = re.compile(r"\b(idle|nothing is produced|no production|non.?production|night|weekend|leak|fault|abnormal)", re.I)
 NUMERIC_PAT = re.compile(r"\b(how much|how many|total|kwh|consume|consumed|energy used|average price|price paid|hottest)\b", re.I)
 WHATIF_PAT = re.compile(r"\bwhat if\b|\bif the .*(price|tariff)|\bif we (had|made|produced|reduced)|\b(would|will)( the)? [^.]{0,30}\bbill\b|\bat last quarter's tariff\b|\bif .*tariff\b", re.I)
 FUTURE_PAT = re.compile(r"\b(next year|next quarter|next month|forecast|predict|will the tariff)\b", re.I)
@@ -160,10 +160,14 @@ def compute(state: AgentState) -> AgentState:
 
         elif intent == "numeric":
             f = ctx["frames"]
-            calc = whatif_tools.numeric_answer(state["question"], f["meter_15min"], f["tariff"], period)
+            q = state["question"]
+            calc = whatif_tools.numeric_answer(q, f["meter_15min"], f["tariff"], period)
             if calc is None:
-                if WHATIF_PAT.search(state["question"]):
-                    calc = engine.whatif_tool(ctx, state["question"], period, compare_to)
+                if re.search(r"how many", q, re.I) and not re.search(r"meter|sub-?meter", q, re.I):
+                    raise engine.OutOfData("physical asset counts beyond meter identifiers are "
+                                           "not in the data")
+                if WHATIF_PAT.search(q):
+                    calc = engine.whatif_tool(ctx, q, period, compare_to)
                     vres["calc"] = calc
                 else:
                     raise engine.AmbiguousPeriod("Question does not map to a known calculator "
@@ -274,11 +278,15 @@ def brief(state: AgentState) -> AgentState:
     errors: list[dict] = []
 
     text = prompts.template_brief(vres, state["question"], answer_type)
-    faith: dict[str, Any] = {"ok": True, "mode": "template", "violations": [], "n_numbers_checked": 0,
+    allow = build_allowlist(vres)
+    template_check = validate_numbers(text, allow)
+    faith: dict[str, Any] = {"ok": bool(template_check["ok"]), "mode": "template",
+                             "violations": template_check["violations"],
+                             "n_numbers_checked": template_check["n_numbers_checked"],
                              "retries": 0}
 
     if use_llm:
-        allow = build_allowlist(vres)
+        allow_llm = build_allowlist(vres)
         system, user = prompts.brief_messages(_allowable_view(vres), state["question"])
         current_text = None
         retried = False
@@ -311,8 +319,7 @@ def brief(state: AgentState) -> AgentState:
                 errors.append({"node": "brief", "error": f"{type(e).__name__}: {e}"})
                 llm_info["fallback"] = "llm_error"
                 text = prompts.template_brief(vres, state["question"], answer_type)
-                faith = {"ok": True, "mode": "template_fallback", "retries": attempt,
-                         "violations": []}
+                faith = {**template_check, "mode": "template_fallback", "retries": attempt}
                 break
 
     out = {"summary": text, "faithfulness": faith, "llm": llm_info,
@@ -359,6 +366,14 @@ def persist(state: AgentState) -> AgentState:
     steps = state.get("steps") or []
     total_ms = round(sum(s.get("ms", 0) for s in steps), 1)
 
+    # mechanical faithfulness for summaries produced without the brief node
+    faith_in = state.get("faithfulness")
+    if faith_in is None:
+        vres2 = state.get("verified", {})
+        allow2 = build_allowlist(vres2)
+        faith_in = {**validate_numbers(state.get("summary", ""), allow2),
+                    "mode": "template_no_llm"}
+
     trace = {
         "run_id": run_id,
         "created_at": _now(),
@@ -375,7 +390,7 @@ def persist(state: AgentState) -> AgentState:
         "tokens": {"prompt": (state.get("llm") or {}).get("prompt_tokens", 0),
                    "completion": (state.get("llm") or {}).get("completion_tokens", 0)},
         "errors": errors,
-        "faithfulness": state.get("faithfulness") or {"ok": None, "mode": "none"},
+        "faithfulness": faith_in,
         "final_answer": payload,  # full payload incl. verified internals (audit); API strips
         "latency_ms": int(total_ms),
     }
