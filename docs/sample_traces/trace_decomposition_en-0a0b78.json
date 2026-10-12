@@ -1,0 +1,800 @@
+{
+  "run_id": "en-0a0b78",
+  "created_at": "2026-10-12T09:54:59+00:00",
+  "question": "Why did the bill go up this quarter compared with last quarter?",
+  "params": {
+    "period": "2026-Q3",
+    "compare_to": "2026-Q2",
+    "intent": "decomposition"
+  },
+  "data_fingerprints": {
+    "tariff": {
+      "version": 1,
+      "sha256": "84a8861396da3d84",
+      "row_count": 10,
+      "loaded_at": "2026-10-12T09:32:27+00:00"
+    },
+    "production": {
+      "version": 1,
+      "sha256": "8b4864a2fb3472fa",
+      "row_count": 549,
+      "loaded_at": "2026-10-12T09:32:28+00:00"
+    },
+    "weather": {
+      "version": 1,
+      "sha256": "44ad80daccb9b7fe",
+      "row_count": 183,
+      "loaded_at": "2026-10-12T09:32:28+00:00"
+    },
+    "meter_15min": {
+      "version": 1,
+      "sha256": "2bc6331be68ecfc3",
+      "row_count": 158112,
+      "loaded_at": "2026-10-12T09:32:29+00:00"
+    }
+  },
+  "validation": {
+    "checks": [
+      {
+        "check": "sub_meter_reconciliation",
+        "tolerance": 0.05,
+        "status": "pass",
+        "detail": "sub-meters sum to 96.8% of main (drift 3.2%, tolerance 5%). Coverage is disclosed, never silently rescaled.",
+        "metrics": {
+          "drift": 0.0321,
+          "coverage": 0.9679,
+          "main_kwh": 2792707.7,
+          "subs_kwh": 2702975.2
+        }
+      },
+      {
+        "check": "negative_energy_and_resets",
+        "status": "pass",
+        "detail": "0 negative values remain; 0 meter resets rebased; 0 negative rows rejected (logged).",
+        "metrics": {
+          "negative_remaining": 0,
+          "resets_rebased": 0,
+          "negatives_rejected": 0
+        }
+      },
+      {
+        "check": "timestamp_regularity",
+        "status": "pass",
+        "detail": "single time zone (UTC); grid = 15 min; 0 off-grid stamps; 31 missing intervals left unfilled; span 183 days.",
+        "metrics": {
+          "off_grid": 0,
+          "missing_intervals": 31,
+          "span_days": 183.0
+        }
+      },
+      {
+        "check": "tariff_coverage",
+        "status": "pass",
+        "detail": "10 tariff rows; 0 overlapping intervals; full coverage of 2026-04-01..2026-09-30 (union of 1 merged interval(s)).",
+        "metrics": {
+          "rows": 10,
+          "overlaps": 0,
+          "covered": true
+        }
+      },
+      {
+        "check": "production_shift_calendar",
+        "status": "pass",
+        "detail": "183 production days; 0 holiday(s) logged as a normal shift; 0 zero-volume day(s) marked as a production shift (handled as non-production for idle analysis and flagged).",
+        "metrics": {
+          "days": 183,
+          "holiday_as_shift": [],
+          "zero_volume_shift_days": 0
+        }
+      },
+      {
+        "check": "data_card_conformance",
+        "status": "pass",
+        "detail": "matches declared card.",
+        "metrics": {
+          "mismatches": []
+        }
+      }
+    ],
+    "blockers": [],
+    "warnings": [],
+    "corrections": {},
+    "summary": {
+      "pass": 6,
+      "warn": 0,
+      "fail": 0,
+      "skip": 0
+    },
+    "ok": true
+  },
+  "steps": [
+    {
+      "node": "classify",
+      "ms": 0.1,
+      "status": "ok",
+      "output": {
+        "intent": "decomposition"
+      }
+    },
+    {
+      "node": "context",
+      "ms": 1555.0,
+      "status": "ok"
+    },
+    {
+      "node": "compute",
+      "ms": 15673.7,
+      "status": "ok",
+      "output": {
+        "answer_type": "decomposition"
+      }
+    },
+    {
+      "node": "brief",
+      "ms": 13737.6,
+      "status": "ok",
+      "output": {
+        "mode": "llm",
+        "violations": 0
+      }
+    },
+    {
+      "node": "persist",
+      "ms": 0.0,
+      "status": "ok"
+    }
+  ],
+  "tool_calls": [
+    {
+      "tool": "decompose_bill",
+      "args": {
+        "period": "2026-Q3",
+        "compare_to": "2026-Q2",
+        "method": "shapley|sequential"
+      },
+      "result_digest": {
+        "bill": {
+          "base": 234538.17,
+          "current": 401064.6,
+          "change": 166526.43,
+          "change_pct": 71.0
+        },
+        "bridge": [
+          {
+            "cause": "tariff",
+            "amount": 91740.36,
+            "pct_points": 39.12,
+            "range": [
+              30.45,
+              46.39
+            ]
+          },
+          {
+            "cause": "volume",
+            "amount": 20667.05,
+            "pct_points": 8.81,
+            "range": [
+              -2.3,
+              21.72
+            ]
+          },
+          {
+            "cause": "product_mix",
+            "amount": 22546.75,
+            "pct_points": 9.61,
+            "range": [
+              8.05,
+              11.08
+            ]
+          },
+          {
+            "cause": "weather",
+            "amount": 27407.84,
+            "pct_points": 11.69,
+            "range": [
+              8.7,
+              14.88
+            ]
+          },
+          {
+            "cause": "waste",
+            "amount": 4164.42,
+            "pct_points": 1.78,
+            "range": [
+              -1.19,
+              3.43
+            ]
+          }
+        ],
+        "n_bootstrap_draws": 59
+      }
+    },
+    {
+      "tool": "asset_ranking",
+      "args": {
+        "period": "2026-Q3"
+      },
+      "result_digest": {
+        "meters": 8
+      }
+    },
+    {
+      "tool": "idle_and_findings",
+      "args": {
+        "period": "2026-Q3"
+      },
+      "result_digest": {
+        "findings": 1
+      }
+    },
+    {
+      "tool": "build_recommendations",
+      "args": {
+        "period": "2026-Q3"
+      },
+      "result_digest": {
+        "recommendations": 5,
+        "pools": [
+          "compressors_2:all_hours",
+          "cooling:off_production",
+          "lighting:off_production",
+          "line_1:off_production",
+          "line_2:off_production"
+        ]
+      }
+    }
+  ],
+  "model": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-lite",
+    "mock": false,
+    "llm_used": true,
+    "calls": 1,
+    "prompt_tokens": 3890,
+    "completion_tokens": 271
+  },
+  "llm_calls": 1,
+  "tokens": {
+    "prompt": 3890,
+    "completion": 271
+  },
+  "errors": [],
+  "faithfulness": {
+    "ok": true,
+    "n_numbers_checked": 18,
+    "n_derived_ok": 0,
+    "violations": [],
+    "mode": "llm",
+    "retries": 0
+  },
+  "final_answer": {
+    "answer_type": "decomposition",
+    "summary": "The energy bill increased by \u20ac166,526.43 (71.0%) this quarter, rising from \u20ac234,538.17 to \u20ac401,064.60.\n\nThe increase is primarily driven by external factors:\n- Tariff changes: \u20ac91,740.36 (39.12%)\n- Weather effects: \u20ac27,407.84 (11.69%)\n- Product mix: \u20ac22,546.75 (9.61%)\n- Volume: \u20ac20,667.05 (8.81%)\n\nControllable waste accounted for \u20ac4,164.42 (1.78%) of the increase. A specific finding identifies a persistent off-production load on \"compressors_2\" (excess of 9.02 kW), consistent with a compressed-air leak. Physical inspection is recommended.\n\nAssumptions and limitations: The baseline model has a 6.0% holdout MAPE. The waste component is an unexplained residual; asset-level claims are based on corroborating meter evidence. Attribution uses Shapley values, and tariff impacts are calculated per 15-minute interval.",
+    "bridge": [
+      {
+        "cause": "tariff",
+        "pct_points": 39.12,
+        "range": [
+          30.45,
+          46.39
+        ]
+      },
+      {
+        "cause": "volume",
+        "pct_points": 8.81,
+        "range": [
+          -2.3,
+          21.72
+        ]
+      },
+      {
+        "cause": "product_mix",
+        "pct_points": 9.61,
+        "range": [
+          8.05,
+          11.08
+        ]
+      },
+      {
+        "cause": "weather",
+        "pct_points": 11.69,
+        "range": [
+          8.7,
+          14.88
+        ]
+      },
+      {
+        "cause": "waste",
+        "pct_points": 1.78,
+        "range": [
+          -1.19,
+          3.43
+        ]
+      }
+    ],
+    "recommendations": [],
+    "assumptions": [
+      "Baseline model: robust (Huber) two-part regression on daily kWh \u2014 base load estimated from off-production intervals with a degree-day response; production surplus regressed on per-product unit volumes, degree-days and calendar effects. Fitted on the baseline quarter only (no leakage).",
+      "Counterfactuals are level translations on the current period's calendar: volume scaled by the total-units ratio, quarterly mix shares, and current weather shifted to the other quarter's mean.",
+      "Daily modelled energy is allocated to tariff buckets with the baseline quarter's observed intraday shares (profile-shape stability assumption).",
+      "Attribution: Shapley (order-independent, exact); tariff prices looked up per 15-minute interval, so the mid-period tariff change is handled exactly."
+    ],
+    "limitations": [
+      "Baseline fit: train R2 1.00, holdout MAPE 6.0%; the residual 'waste' term includes baseline model error of about +0.06 pct points and estimation noise.",
+      "The waste component is an unexplained residual in currency terms. It does NOT by itself identify a faulty asset \u2014 asset-level claims require corroborating meter evidence."
+    ],
+    "data_quality": null,
+    "computed_change_pct": 71.0,
+    "vres": {
+      "data_quality": null,
+      "bill": {
+        "base": 234538.17,
+        "current": 401064.6,
+        "change": 166526.43,
+        "change_pct": 71.0
+      },
+      "bridge": [
+        {
+          "cause": "tariff",
+          "amount": 91740.36,
+          "pct_points": 39.12,
+          "range": [
+            30.45,
+            46.39
+          ]
+        },
+        {
+          "cause": "volume",
+          "amount": 20667.05,
+          "pct_points": 8.81,
+          "range": [
+            -2.3,
+            21.72
+          ]
+        },
+        {
+          "cause": "product_mix",
+          "amount": 22546.75,
+          "pct_points": 9.61,
+          "range": [
+            8.05,
+            11.08
+          ]
+        },
+        {
+          "cause": "weather",
+          "amount": 27407.84,
+          "pct_points": 11.69,
+          "range": [
+            8.7,
+            14.88
+          ]
+        },
+        {
+          "cause": "waste",
+          "amount": 4164.42,
+          "pct_points": 1.78,
+          "range": [
+            -1.19,
+            3.43
+          ]
+        }
+      ],
+      "model": {
+        "r2": 0.9987,
+        "rmse": 235.9,
+        "holdout_mape_pct": 6.0,
+        "n_train_days": 91,
+        "robust": "RLM(Huber)+trimming",
+        "trimmed_days": 5,
+        "base_model": {
+          "intercept": 300.1,
+          "cdd": 50.92,
+          "hdd": -1.27,
+          "weekend": 682.88,
+          "holiday": 1241.81,
+          "weekday": 0.0
+        },
+        "kwh_per_unit": {
+          "A": 19.671,
+          "B": 12.919,
+          "C": 9.092
+        },
+        "prod_cdd_coef": 145.2,
+        "base_cdd_coef": 50.9,
+        "products": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "assumptions": [
+        "Baseline model: robust (Huber) two-part regression on daily kWh \u2014 base load estimated from off-production intervals with a degree-day response; production surplus regressed on per-product unit volumes, degree-days and calendar effects. Fitted on the baseline quarter only (no leakage).",
+        "Counterfactuals are level translations on the current period's calendar: volume scaled by the total-units ratio, quarterly mix shares, and current weather shifted to the other quarter's mean.",
+        "Daily modelled energy is allocated to tariff buckets with the baseline quarter's observed intraday shares (profile-shape stability assumption).",
+        "Attribution: Shapley (order-independent, exact); tariff prices looked up per 15-minute interval, so the mid-period tariff change is handled exactly."
+      ],
+      "limitations": [
+        "Baseline fit: train R2 1.00, holdout MAPE 6.0%; the residual 'waste' term includes baseline model error of about +0.06 pct points and estimation noise.",
+        "The waste component is an unexplained residual in currency terms. It does NOT by itself identify a faulty asset \u2014 asset-level claims require corroborating meter evidence."
+      ],
+      "n_bootstrap_draws": 59,
+      "assets": {
+        "period": "2026-Q3",
+        "ranking": [
+          {
+            "meter_id": "line_1",
+            "kwh": 351564.4,
+            "share_pct": 22.43
+          },
+          {
+            "meter_id": "furnace_1",
+            "kwh": 309142.2,
+            "share_pct": 19.73
+          },
+          {
+            "meter_id": "line_2",
+            "kwh": 289396.3,
+            "share_pct": 18.47
+          },
+          {
+            "meter_id": "cooling",
+            "kwh": 215417.1,
+            "share_pct": 13.75
+          },
+          {
+            "meter_id": "furnace_2",
+            "kwh": 171221.4,
+            "share_pct": 10.93
+          },
+          {
+            "meter_id": "compressors_1",
+            "kwh": 84288.7,
+            "share_pct": 5.38
+          },
+          {
+            "meter_id": "compressors_2",
+            "kwh": 65471.3,
+            "share_pct": 4.18
+          },
+          {
+            "meter_id": "lighting",
+            "kwh": 30490.5,
+            "share_pct": 1.95
+          }
+        ],
+        "main_meter": {
+          "meter_id": "MAIN",
+          "kwh": 1567096.4
+        },
+        "sub_meter_coverage": 0.968,
+        "reconciliation_drift": 0.032,
+        "within_tolerance": true,
+        "tolerance": 0.05,
+        "assumption": "Coverage <100% is disclosed as a measurement-coverage fact; sub-meter totals are not rescaled to force a match."
+      },
+      "savings": {
+        "recommendations": [
+          {
+            "action": "Fix cooling scheduling / setpoints for cooling outside production hours",
+            "rationale": "Measured idle load: 73,562 kWh over 1,056 idle hours (34.1% of this meter's consumption) - nights, weekends and holidays.",
+            "evidence_refs": [
+              "meter_15min:cooling:2026-Q3:off_production"
+            ],
+            "confidence": "medium",
+            "requires_approval": false,
+            "ease": "easy",
+            "payback_months": [
+              0.0,
+              1.0
+            ],
+            "saving_kwh_per_year": [
+              29425.0,
+              73562.0
+            ],
+            "saving_money_per_year": [
+              6963.0,
+              17406.0
+            ],
+            "saving_co2e_t_per_year": [
+              12.4,
+              30.9
+            ],
+            "estimated_impact": "29\u201374 MWh/yr \u00b7 \u20ac7.0k\u2013\u20ac17.4k/yr \u00b7 12.4\u201330.9 t CO2e/yr \u00b7 payback ~0\u20131 months",
+            "assumptions": [
+              "Cooling idle pool with achievable setpoint/network tuning 10\u201325% (documented).",
+              "energy valued at the metered usage-weighted rate for the pool's hours (\u20ac0.237/kWh)",
+              "implementation cost \u20ac0\u2013\u20ac600 (documented assumption; Annex A may override)"
+            ],
+            "limitations": []
+          },
+          {
+            "action": "Switch off / schedule lighting during non-production hours",
+            "rationale": "Measured idle load: 8,265 kWh over 1,056 idle hours (27.1% of this meter's consumption) - nights, weekends and holidays.",
+            "evidence_refs": [
+              "meter_15min:lighting:2026-Q3:off_production"
+            ],
+            "confidence": "low",
+            "requires_approval": false,
+            "ease": "easy",
+            "payback_months": [
+              0.0,
+              2.4
+            ],
+            "saving_kwh_per_year": [
+              16531.0,
+              29755.0
+            ],
+            "saving_money_per_year": [
+              3986.0,
+              7176.0
+            ],
+            "saving_co2e_t_per_year": [
+              6.9,
+              12.5
+            ],
+            "estimated_impact": "17\u201330 MWh/yr \u00b7 \u20ac4.0k\u2013\u20ac7.2k/yr \u00b7 6.9\u201312.5 t CO2e/yr \u00b7 payback ~0\u20132 months",
+            "assumptions": [
+              "Measured idle kWh annualized (13 observed weeks x 4); achievable shutdown fraction 50\u201390% of the idle pool (documented).",
+              "energy valued at the metered usage-weighted rate for the pool's hours (\u20ac0.241/kWh)",
+              "implementation cost \u20ac0\u2013\u20ac800 (documented assumption; Annex A may override)"
+            ],
+            "limitations": []
+          },
+          {
+            "action": "Repair suspected compressed-air leak on compressors_2",
+            "rationale": "Night/weekend load on compressors_2 stayed at ~18.77 kW vs an early-quarter median of 9.75 kW for 4+ weeks (steady load = True). The unexplained bill residual (1.8 pct points) also leaves room for this waste.",
+            "evidence_refs": [
+              "meter_15min:compressors_2:2026-Q3:weeks>=W37",
+              "ops_calendar:nights+weekends+holidays",
+              "ops_calendar:2026-Q3:off_production_windows"
+            ],
+            "confidence": "medium",
+            "requires_approval": true,
+            "ease": "medium",
+            "payback_months": [
+              0.6,
+              2.7
+            ],
+            "saving_kwh_per_year": [
+              63212.0,
+              94818.0
+            ],
+            "saving_money_per_year": [
+              15563.0,
+              23344.0
+            ],
+            "saving_co2e_t_per_year": [
+              26.5,
+              39.8
+            ],
+            "estimated_impact": "63\u201395 MWh/yr \u00b7 \u20ac15.6k\u2013\u20ac23.3k/yr \u00b7 26.5\u201339.8 t CO2e/yr \u00b7 payback ~1\u20133 months",
+            "assumptions": [
+              "Measured off-production excess load extrapolated to all compressed-air hours with a 0.8\u20131.2 uncertainty band (documented extrapolation).",
+              "energy valued at the metered usage-weighted rate for the pool's hours (\u20ac0.246/kWh)",
+              "implementation cost \u20ac1,200\u2013\u20ac3,500 (documented assumption; Annex A may override)",
+              "the inferred cause ('consistent with compressed-air leak') requires inspection - the saving pool assumes the leak is real and is fully fixed",
+              "bill residual corroboration: yes"
+            ],
+            "limitations": []
+          },
+          {
+            "action": "Switch off / schedule line_1 during non-production hours",
+            "rationale": "Measured idle load: 309 kWh over 1,056 idle hours (0.1% of this meter's consumption) - nights, weekends and holidays.",
+            "evidence_refs": [
+              "meter_15min:line_1:2026-Q3:off_production"
+            ],
+            "confidence": "low",
+            "requires_approval": false,
+            "ease": "easy",
+            "payback_months": [
+              0.0,
+              59.2
+            ],
+            "saving_kwh_per_year": [
+              618.0,
+              1113.0
+            ],
+            "saving_money_per_year": [
+              162.0,
+              292.0
+            ],
+            "saving_co2e_t_per_year": [
+              0.3,
+              0.5
+            ],
+            "estimated_impact": "1\u20131 MWh/yr \u00b7 \u20ac0.2k\u2013\u20ac0.3k/yr \u00b7 0.3\u20130.5 t CO2e/yr \u00b7 payback ~0\u201359 months",
+            "assumptions": [
+              "Measured idle kWh annualized (13 observed weeks x 4); achievable shutdown fraction 50\u201390% of the idle pool (documented).",
+              "energy valued at the metered usage-weighted rate for the pool's hours (\u20ac0.262/kWh)",
+              "implementation cost \u20ac0\u2013\u20ac800 (documented assumption; Annex A may override)"
+            ],
+            "limitations": []
+          },
+          {
+            "action": "Switch off / schedule line_2 during non-production hours",
+            "rationale": "Measured idle load: 206 kWh over 1,056 idle hours (0.1% of this meter's consumption) - nights, weekends and holidays.",
+            "evidence_refs": [
+              "meter_15min:line_2:2026-Q3:off_production"
+            ],
+            "confidence": "low",
+            "requires_approval": false,
+            "ease": "easy",
+            "payback_months": [
+              0.0,
+              89.0
+            ],
+            "saving_kwh_per_year": [
+              411.0,
+              741.0
+            ],
+            "saving_money_per_year": [
+              108.0,
+              194.0
+            ],
+            "saving_co2e_t_per_year": [
+              0.2,
+              0.3
+            ],
+            "estimated_impact": "0\u20131 MWh/yr \u00b7 \u20ac0.1k\u2013\u20ac0.2k/yr \u00b7 0.2\u20130.3 t CO2e/yr \u00b7 payback ~0\u201389 months",
+            "assumptions": [
+              "Measured idle kWh annualized (13 observed weeks x 4); achievable shutdown fraction 50\u201390% of the idle pool (documented).",
+              "energy valued at the metered usage-weighted rate for the pool's hours (\u20ac0.262/kWh)",
+              "implementation cost \u20ac0\u2013\u20ac800 (documented assumption; Annex A may override)"
+            ],
+            "limitations": []
+          }
+        ],
+        "ledger": {
+          "pools": [
+            "compressors_2:all_hours",
+            "cooling:off_production",
+            "lighting:off_production",
+            "line_1:off_production",
+            "line_2:off_production"
+          ],
+          "note": "each recommendation draws from one disjoint (meter, window) evidence pool; no pool funds two actions (no double-counting)"
+        },
+        "emission_factor": {
+          "kg_per_kwh": 0.42,
+          "source": "data card (from the data pack)",
+          "missing": false
+        }
+      },
+      "idle": {
+        "period": "2026-Q3",
+        "by_meter": [
+          {
+            "meter_id": "MAIN",
+            "meter_type": "other",
+            "idle_kwh": 132032.5,
+            "idle_hours": 1056.0,
+            "night_kwh": 92860.8,
+            "weekend_kwh": 39171.7,
+            "total_kwh": 1567096.4,
+            "idle_share_pct": 8.4,
+            "off_prod_avg_kw": 125.03
+          },
+          {
+            "meter_id": "cooling",
+            "meter_type": "cooling",
+            "idle_kwh": 73562.1,
+            "idle_hours": 1056.0,
+            "night_kwh": 51705.7,
+            "weekend_kwh": 21856.4,
+            "total_kwh": 215417.1,
+            "idle_share_pct": 34.1,
+            "off_prod_avg_kw": 69.66
+          },
+          {
+            "meter_id": "furnace_2",
+            "meter_type": "furnace",
+            "idle_kwh": 17086.5,
+            "idle_hours": 1056.0,
+            "night_kwh": 12013.8,
+            "weekend_kwh": 5072.7,
+            "total_kwh": 171221.4,
+            "idle_share_pct": 10.0,
+            "off_prod_avg_kw": 16.18
+          },
+          {
+            "meter_id": "compressors_2",
+            "meter_type": "compressor",
+            "idle_kwh": 15636.7,
+            "idle_hours": 1056.0,
+            "night_kwh": 11012.4,
+            "weekend_kwh": 4624.3,
+            "total_kwh": 65471.3,
+            "idle_share_pct": 23.9,
+            "off_prod_avg_kw": 14.81
+          },
+          {
+            "meter_id": "compressors_1",
+            "meter_type": "compressor",
+            "idle_kwh": 12384.4,
+            "idle_hours": 1056.0,
+            "night_kwh": 8740.0,
+            "weekend_kwh": 3644.4,
+            "total_kwh": 84288.7,
+            "idle_share_pct": 14.7,
+            "off_prod_avg_kw": 11.73
+          },
+          {
+            "meter_id": "lighting",
+            "meter_type": "lighting",
+            "idle_kwh": 8265.4,
+            "idle_hours": 1056.0,
+            "night_kwh": 5824.7,
+            "weekend_kwh": 2440.6,
+            "total_kwh": 30490.5,
+            "idle_share_pct": 27.1,
+            "off_prod_avg_kw": 7.83
+          },
+          {
+            "meter_id": "furnace_1",
+            "meter_type": "furnace",
+            "idle_kwh": 515.0,
+            "idle_hours": 1056.0,
+            "night_kwh": 363.4,
+            "weekend_kwh": 151.6,
+            "total_kwh": 309142.2,
+            "idle_share_pct": 0.2,
+            "off_prod_avg_kw": 0.49
+          },
+          {
+            "meter_id": "line_1",
+            "meter_type": "line",
+            "idle_kwh": 309.1,
+            "idle_hours": 1056.0,
+            "night_kwh": 217.8,
+            "weekend_kwh": 91.3,
+            "total_kwh": 351564.4,
+            "idle_share_pct": 0.1,
+            "off_prod_avg_kw": 0.29
+          },
+          {
+            "meter_id": "line_2",
+            "meter_type": "line",
+            "idle_kwh": 205.7,
+            "idle_hours": 1056.0,
+            "night_kwh": 144.8,
+            "weekend_kwh": 60.9,
+            "total_kwh": 289396.3,
+            "idle_share_pct": 0.1,
+            "off_prod_avg_kw": 0.19
+          }
+        ],
+        "total_idle_kwh": 127964.9,
+        "definition": "Non-production = nights (22:00-06:00), weekends, zero-volume days and public holidays (including holidays mislabeled as normal shifts).",
+        "findings": [
+          {
+            "meter_id": "compressors_2",
+            "meter_type": "compressor",
+            "kind": "persistent_off_production_load",
+            "measured": {
+              "off_prod_kw_early_median": 9.75,
+              "off_prod_kw_recent_median": 18.77,
+              "excess_off_prod_kw": 9.02,
+              "steady_load": true,
+              "persistent_weeks": 4,
+              "corroborated_by_bill_residual": true
+            },
+            "inferred_cause": "Night-time and weekend compressor load staying above its early-quarter level - consistent with a compressed-air leak; requires physical inspection.",
+            "confidence": "medium",
+            "evidence_refs": [
+              "meter_15min:compressors_2:2026-Q3:weeks>=W37",
+              "ops_calendar:nights+weekends+holidays"
+            ],
+            "window": {
+              "from_week": 37
+            }
+          }
+        ],
+        "note": "Findings are measured load patterns plus clearly-labelled inferred causes (never confirmed faults). A repair recommendation is only raised when the bill decomposition also leaves a controllable residual to explain."
+      }
+    },
+    "run_id": "en-0a0b78",
+    "trace_hint": "GET /trace/en-0a0b78"
+  },
+  "latency_ms": 30966
+}

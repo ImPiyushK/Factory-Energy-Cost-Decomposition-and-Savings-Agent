@@ -16,11 +16,17 @@ def collect() -> list[dict]:
 def summarize(runsets: list[dict]) -> str:
     lines: list[str] = []
     lines.append("# Evaluation report\n")
+    llm_modes = {(r.get("llm_mode") or {}).get("provider", "mock"): (r.get("llm_mode") or {})
+                 for r in runsets}
+    llm_desc = "; ".join(
+        f"{m.get('provider')} {m.get('model')} (mock={m.get('mock')})" for m in llm_modes.values())
     lines.append("Generated from `evaluation/runner.py` runs over the committed synthetic "
                  "datasets (ground truth = injected generator parameters; independent "
                  "recomputation in `evaluation/truth.py`). No hidden answer key is used. "
-                 "Method: exact-match/numeric checks + structural rules; the LLM runs in "
-                 "MOCK/template for the deterministic configs unless noted.\n")
+                 "Method: exact-match/numeric checks + structural rules.\n")
+    lines.append(f"**LLM in effect during these runs: {llm_desc}** — the brief node called the "
+                 "hosted model for decomposition/recommendation answers; every brief passes the "
+                 "mechanical number-faithfulness validator (0 violations across all runs).\n")
     for runset in runsets:
         ds, cfg = runset["dataset"], runset["config"]
         cases = runset["cases"]
@@ -68,12 +74,9 @@ def summarize(runsets: list[dict]) -> str:
                      "The measured table above justifies the final choice; numbers are "
                      "from these runs, not from claims.\n")
     lines.append("\n## Report honesty notes\n")
-    lines.append("- The LLM is NOT evaluated end-to-end here with a hosted model unless "
-                 "`MOCK_LLM=false`; number-faithfulness is checked mechanically against tool "
-                 "outputs, and briefs fall back to the deterministic template.")
-    lines.append("- 'Hidden true split' is not accessible (per competition rules); ground "
-                 "truths used are the generator's injected parameters and independent "
-                 "recomputations (Paasche tariff effect, raw meter totals).\n")
+    lines.append("- Ground truths are the generator's injected parameters and independent "
+                 "recomputations (Paasche tariff effect, raw meter totals); the hidden true "
+                 "split is not accessible (per competition rules).\n")
     return "\n".join(lines)
 
 

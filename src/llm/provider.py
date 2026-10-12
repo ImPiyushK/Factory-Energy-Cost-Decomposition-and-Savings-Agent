@@ -31,6 +31,29 @@ class BaseProvider:
     def generate(self, system: str, user: str) -> LLMResult:
         raise NotImplementedError
 
+    def _with_backoff(self, url: str, *, headers: dict | None = None, timeout: float,
+                      payload: dict) -> dict:
+        """POST with exponential backoff on 429/5xx (rate limits are real in demos)."""
+        import time
+        last_error = ""
+        for attempt, delay in enumerate((0.0, 8.0, 20.0, 40.0)):
+            if delay:
+                time.sleep(delay)
+            try:
+                r = httpx.post(url, timeout=timeout, headers=headers or {}, json=payload)
+            except httpx.HTTPStatusError as e:
+                last_error = str(e)
+                if e.response is not None and (e.response.status_code in (429,) or
+                                               e.response.status_code >= 500):
+                    continue
+                raise
+            if r.status_code in (429,) or r.status_code >= 500:
+                last_error = f"HTTP {r.status_code}: {r.text[:200]}"
+                continue
+            r.raise_for_status()
+            return r.json()
+        raise RuntimeError(f"LLM provider unavailable after retries: {last_error}")
+
 
 class MockProvider(BaseProvider):
     """MOCK_LLM=true: the deterministic template is produced by the brief node itself."""
@@ -46,9 +69,8 @@ class OpenAIProvider(BaseProvider):
     url = "https://api.openai.com/v1/chat/completions"
 
     def generate(self, system: str, user: str) -> LLMResult:
-        import os
-        r = httpx.post(self.url, timeout=45, headers={
-            "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY', '')}"},
+        r = httpx.post(self.url, timeout=60, headers={
+            "Authorization": f"Bearer {settings.openai_api_key}"},
             json={"model": settings.llm_model, "temperature": 0.0,
                   "messages": [{"role": "system", "content": system},
                                {"role": "user", "content": user}]})
@@ -65,9 +87,8 @@ class AnthropicProvider(BaseProvider):
     url = "https://api.anthropic.com/v1/messages"
 
     def generate(self, system: str, user: str) -> LLMResult:
-        import os
-        r = httpx.post(self.url, timeout=45, headers={
-            "x-api-key": os.environ.get("ANTHROPIC_API_KEY", ""),
+        r = httpx.post(self.url, timeout=60, headers={
+            "x-api-key": settings.anthropic_api_key,
             "anthropic-version": "2023-06-01"},
             json={"model": settings.llm_model, "max_tokens": 500, "temperature": 0.0,
                   "system": system, "messages": [{"role": "user", "content": user}]})
@@ -84,14 +105,12 @@ class GoogleProvider(BaseProvider):
     url = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
     def generate(self, system: str, user: str) -> LLMResult:
-        import os
-        key = os.environ.get("GEMINI_API_KEY", "")
-        r = httpx.post(self.url.format(model=settings.llm_model) + f"?key={key}", timeout=45,
-                       json={"system_instruction": {"parts": [{"text": system}]},
-                             "contents": [{"role": "user", "parts": [{"text": user}]}],
-                             "generationConfig": {"temperature": 0.0}})
-        r.raise_for_status()
-        d = r.json()
+        d = self._with_backoff(
+            self.url.format(model=settings.llm_model) + f"?key={settings.gemini_api_key}",
+            timeout=60,
+            payload={"system_instruction": {"parts": [{"text": system}]},
+                     "contents": [{"role": "user", "parts": [{"text": user}]}],
+                     "generationConfig": {"temperature": 0.0}})
         msg = d["candidates"][0]["content"]["parts"][0]["text"]
         u = (d.get("usageMetadata", {}) or {})
         return LLMResult(msg, u.get("promptTokenCount", 0), u.get("candidatesTokenCount", 0),

@@ -2,6 +2,11 @@
   "dataset": "no_leak",
   "config": "A",
   "db": "/home/piyush/Documents/Factory-Energy-Cost-Decomposition-and-Savings-Agent/data/eval_no_leak.db",
+  "llm_mode": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-lite",
+    "mock": false
+  },
   "cases": [
     {
       "id": "EV-02",
@@ -9,7 +14,7 @@
       "config": "A",
       "question": "Why did the bill go up this quarter compared with last quarter?",
       "answer_type": "decomposition",
-      "run_id": "en-d75db8",
+      "run_id": "en-9681d8",
       "pass": true,
       "checks": [
         {
@@ -30,15 +35,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 18, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 19, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 14042,
-      "llm_calls": 0,
+      "latency_ms": 65520,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 945,
+        "completion": 268
       }
     },
     {
@@ -47,7 +52,7 @@
       "config": "A",
       "question": "Why is energy consumption higher?",
       "answer_type": "decomposition",
-      "run_id": "en-278b6f",
+      "run_id": "en-fdafc2",
       "pass": true,
       "checks": [
         {
@@ -63,15 +68,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 18, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 19, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 15073,
-      "llm_calls": 0,
+      "latency_ms": 36943,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 938,
+        "completion": 249
       }
     },
     {
@@ -80,7 +85,7 @@
       "config": "A",
       "question": "Why did our energy per unit go up?",
       "answer_type": "decomposition",
-      "run_id": "en-c8805d",
+      "run_id": "en-b0ce43",
       "pass": true,
       "checks": [
         {
@@ -101,15 +106,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 18, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 20, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 14517,
-      "llm_calls": 0,
+      "latency_ms": 34817,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 941,
+        "completion": 238
       }
     },
     {
@@ -136,7 +141,7 @@
         }
       ],
       "latency_ms": 0,
-      "llm_calls": 0
+      "llm_calls": 1
     },
     {
       "id": "EV-24",

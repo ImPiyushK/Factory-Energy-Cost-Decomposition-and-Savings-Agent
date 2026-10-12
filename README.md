@@ -96,6 +96,16 @@ generator's injected parameters and independent recomputations
 3. Compare the two run ids (UI screen "Late-drop compare" or `GET /trace/{run_id}`)
    → what changed and why; both runs remain auditable.
 
+## LLM
+
+Configured via `.env` (never committed): this build runs **LLM_PROVIDER=google,
+LLM_MODEL=gemini-3.1-flash-lite** (the spec's flash tier; higher-tier flash models
+returned quota-limited responses with this key — the provider switch makes that a
+one-line change). Keys stay in `.env`; the provider retries with backoff on 429/5xx
+and the workflow falls back to the deterministic template brief if the API is
+unavailable — a live demo cannot fail on the LLM. `MOCK_LLM=true` runs everything
+without network.
+
 ## Assumptions & limitations (also disclosed per-run in the brief)
 
 * Counterfactuals are level translations on the current period's calendar (standard

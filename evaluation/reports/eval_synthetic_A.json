@@ -2,6 +2,11 @@
   "dataset": "synthetic",
   "config": "A",
   "db": "/home/piyush/Documents/Factory-Energy-Cost-Decomposition-and-Savings-Agent/data/eval_synthetic.db",
+  "llm_mode": {
+    "provider": "google",
+    "model": "gemini-3.1-flash-lite",
+    "mock": false
+  },
   "cases": [
     {
       "id": "EV-01",
@@ -9,7 +14,7 @@
       "config": "A",
       "question": "Why did the bill go up this quarter compared with last quarter?",
       "answer_type": "decomposition",
-      "run_id": "en-1aeb25",
+      "run_id": "en-6f6ed0",
       "pass": true,
       "checks": [
         {
@@ -35,15 +40,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 19, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 18, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 15613,
-      "llm_calls": 0,
+      "latency_ms": 33493,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 3890,
+        "completion": 271
       }
     },
     {
@@ -52,7 +57,7 @@
       "config": "A",
       "question": "Which assets use the most energy?",
       "answer_type": "calculated",
-      "run_id": "en-0d9889",
+      "run_id": "en-9d1b29",
       "pass": true,
       "checks": [
         {
@@ -72,7 +77,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 1815,
+      "latency_ms": 2467,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -85,7 +90,7 @@
       "config": "A",
       "question": "How much energy is used when nothing is produced?",
       "answer_type": "calculated",
-      "run_id": "en-6bf8b2",
+      "run_id": "en-dbb9b3",
       "pass": true,
       "checks": [
         {
@@ -110,7 +115,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2187,
+      "latency_ms": 3175,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -123,7 +128,7 @@
       "config": "A",
       "question": "Any leaks or equipment faults?",
       "answer_type": "calculated",
-      "run_id": "en-58f0d6",
+      "run_id": "en-9caaed",
       "pass": true,
       "checks": [
         {
@@ -148,7 +153,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2636,
+      "latency_ms": 3194,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -161,7 +166,7 @@
       "config": "A",
       "question": "What should we do first?",
       "answer_type": "recommendation",
-      "run_id": "en-3a0f76",
+      "run_id": "en-797cf9",
       "pass": true,
       "checks": [
         {
@@ -177,15 +182,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 40, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 20, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 14725,
-      "llm_calls": 0,
+      "latency_ms": 37998,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 3683,
+        "completion": 274
       }
     },
     {
@@ -194,7 +199,7 @@
       "config": "A",
       "question": "Which action pays back fastest?",
       "answer_type": "recommendation",
-      "run_id": "en-7ae7d0",
+      "run_id": "en-33f725",
       "pass": true,
       "checks": [
         {
@@ -210,15 +215,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 40, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 22, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 15046,
-      "llm_calls": 0,
+      "latency_ms": 36668,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 3683,
+        "completion": 270
       }
     },
     {
@@ -227,7 +232,7 @@
       "config": "A",
       "question": "Total kWh consumed in 2026-Q3?",
       "answer_type": "calculated",
-      "run_id": "en-7cebba",
+      "run_id": "en-0e01df",
       "pass": true,
       "checks": [
         {
@@ -247,7 +252,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 1618,
+      "latency_ms": 2513,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -260,7 +265,7 @@
       "config": "A",
       "question": "What was our average price paid in 2026-Q3?",
       "answer_type": "calculated",
-      "run_id": "en-d927a4",
+      "run_id": "en-0665ea",
       "pass": true,
       "checks": [
         {
@@ -280,7 +285,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2353,
+      "latency_ms": 2506,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -293,7 +298,7 @@
       "config": "A",
       "question": "What will the tariff be next year?",
       "answer_type": "not_in_data",
-      "run_id": "en-3bc020",
+      "run_id": "en-f5b794",
       "pass": true,
       "checks": [
         {
@@ -308,7 +313,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 1790,
+      "latency_ms": 1996,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -321,7 +326,7 @@
       "config": "A",
       "question": "How many compressors does the site own in total?",
       "answer_type": "not_in_data",
-      "run_id": "en-3c0c70",
+      "run_id": "en-b99619",
       "pass": true,
       "checks": [
         {
@@ -336,7 +341,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 1790,
+      "latency_ms": 2235,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -349,7 +354,7 @@
       "config": "A",
       "question": "What would the Q3 bill have been at last quarter's tariff?",
       "answer_type": "calculated",
-      "run_id": "en-48efc0",
+      "run_id": "en-8ae6b3",
       "pass": true,
       "checks": [
         {
@@ -364,7 +369,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2712,
+      "latency_ms": 3488,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -377,7 +382,7 @@
       "config": "A",
       "question": "What if the peak price were 10% lower in 2026-Q3?",
       "answer_type": "calculated",
-      "run_id": "en-0104c5",
+      "run_id": "en-2b8cdd",
       "pass": true,
       "checks": [
         {
@@ -397,7 +402,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2762,
+      "latency_ms": 3234,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -410,7 +415,7 @@
       "config": "A",
       "question": "The furnace is definitely wasting 50,000 kWh - confirm.",
       "answer_type": "refused",
-      "run_id": "en-a9f61c",
+      "run_id": "en-015797",
       "pass": true,
       "checks": [
         {
@@ -430,7 +435,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 1899,
+      "latency_ms": 2379,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -443,7 +448,7 @@
       "config": "A",
       "question": "Give me exact savings to the kWh, no ranges, for the leak.",
       "answer_type": "recommendation",
-      "run_id": "en-0fbe02",
+      "run_id": "en-d0ef3c",
       "pass": true,
       "checks": [
         {
@@ -459,15 +464,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 40, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 14, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 15322,
-      "llm_calls": 0,
+      "latency_ms": 35665,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 3707,
+        "completion": 243
       }
     },
     {
@@ -476,7 +481,7 @@
       "config": "A",
       "question": "Why did the bill go up this quarter compared with last quarter?",
       "answer_type": "decomposition",
-      "run_id": "en-65aa2e",
+      "run_id": "en-b1ef1e",
       "pass": true,
       "checks": [
         {
@@ -492,15 +497,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 19, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 18, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 15169,
-      "llm_calls": 0,
+      "latency_ms": 28818,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 3890,
+        "completion": 271
       }
     },
     {
@@ -509,7 +514,7 @@
       "config": "A",
       "question": "Why did the bill go up this quarter compared with last quarter?",
       "answer_type": "decomposition",
-      "run_id": "en-10cf3e",
+      "run_id": "en-d2b591",
       "pass": true,
       "checks": [
         {
@@ -525,15 +530,15 @@
         {
           "check": "faithfulness_ok",
           "ok": true,
-          "detail": "{\"ok\": true, \"mode\": \"template\", \"violations\": [], \"n_numbers_checked\": 19, \"retries\": 0}"
+          "detail": "{\"ok\": true, \"n_numbers_checked\": 18, \"n_derived_ok\": 0, \"violations\": [], \"mode\": \"llm\", \"retries\": 0}"
         }
       ],
       "notes": [],
-      "latency_ms": 15166,
-      "llm_calls": 0,
+      "latency_ms": 36971,
+      "llm_calls": 1,
       "tokens": {
-        "prompt": 0,
-        "completion": 0
+        "prompt": 3890,
+        "completion": 271
       }
     },
     {
@@ -542,7 +547,7 @@
       "config": "A",
       "question": "How much energy is used when nothing is produced?",
       "answer_type": "calculated",
-      "run_id": "en-0e6e90",
+      "run_id": "en-20f5da",
       "pass": true,
       "checks": [
         {
@@ -562,7 +567,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2685,
+      "latency_ms": 3116,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -575,7 +580,7 @@
       "config": "A",
       "question": "Which assets use the most energy?",
       "answer_type": "calculated",
-      "run_id": "en-6c53c8",
+      "run_id": "en-574e58",
       "pass": true,
       "checks": [
         {
@@ -595,7 +600,7 @@
         }
       ],
       "notes": [],
-      "latency_ms": 2178,
+      "latency_ms": 2681,
       "llm_calls": 0,
       "tokens": {
         "prompt": 0,
@@ -626,7 +631,7 @@
         }
       ],
       "latency_ms": 0,
-      "llm_calls": 0
+      "llm_calls": 1
     },
     {
       "id": "EV-24",

@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.0
     llm_max_retries: int = 1            # brief regeneration retries on faithfulness failure
 
+    # --- provider keys (from env/.env only; never written to Git) ---
+    openai_api_key: str = ""
+    anthropic_api_key: str = ""
+    gemini_api_key: str = ""
+    voyage_api_key: str = ""
+
     # --- Paths ---
     db_path: str = "data/energy_agent.db"
     data_dir: str = "data"

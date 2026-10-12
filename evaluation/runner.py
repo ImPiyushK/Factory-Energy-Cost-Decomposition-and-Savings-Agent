@@ -44,9 +44,8 @@ def bootstrap_env(dataset: str) -> Path:
     for suffix in ("", "-wal", "-shm"):
         Path(str(db_path) + suffix).unlink(missing_ok=True)
     os.environ["DB_PATH"] = str(db_path)
-    os.environ.setdefault("MOCK_LLM", "true")
-    os.environ["DATA_DIR"] = str(DATASETS[dataset].parent if dataset == "no_leak"
-                                 else ROOT / "data")
+    # NOTE: MOCK_LLM is intentionally NOT defaulted here — the parent environment
+    # (or .env) decides whether the evaluation runs the real LLM.
     # data card must describe the dataset itself for EF resolution
     if dataset == "no_leak":
         os.environ["DATA_DIR"] = str(DATASETS[dataset])
@@ -350,12 +349,18 @@ def runner_main() -> None:
 
     results = run_cases(args.dataset, args.config)
     results += api_ingest_cases(args.dataset, args.config)
+
+    from src.config import settings as cfg_final
+    llm_mode = {"provider": cfg_final.llm_provider, "model": cfg_final.llm_model,
+                "mock": bool(cfg_final.mock_llm)}
+
     try:
         metric = decomp_metric_for_config(args.config, args.dataset)
     except Exception as e:
         metric = {"config": args.config, "error": str(e)}
 
     out = {"dataset": args.dataset, "config": args.config, "db": str(db_path),
+           "llm_mode": llm_mode,
            "cases": results, "dataset_metric": metric}
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     path = args.out or str(REPORT_DIR / f"eval_{args.dataset}_{args.config}.json")

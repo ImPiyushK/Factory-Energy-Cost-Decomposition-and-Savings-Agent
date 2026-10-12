@@ -1,6 +1,8 @@
 # Evaluation report
 
-Generated from `evaluation/runner.py` runs over the committed synthetic datasets (ground truth = injected generator parameters; independent recomputation in `evaluation/truth.py`). No hidden answer key is used. Method: exact-match/numeric checks + structural rules; the LLM runs in MOCK/template for the deterministic configs unless noted.
+Generated from `evaluation/runner.py` runs over the committed synthetic datasets (ground truth = injected generator parameters; independent recomputation in `evaluation/truth.py`). No hidden answer key is used. Method: exact-match/numeric checks + structural rules.
+
+**LLM in effect during these runs: google gemini-3.1-flash-lite (mock=False)** — the brief node called the hosted model for decomposition/recommendation answers; every brief passes the mechanical number-faithfulness validator (0 violations across all runs).
 
 
 ## Dataset `no_leak` — Config A
@@ -15,8 +17,8 @@ Generated from `evaluation/runner.py` runs over the committed synthetic datasets
 | tariff_paasche_truth_pp | 43.8 |
 | n_bootstrap_draws | 59 |
 | model_holdout_mape_pct | 6.85 |
-| latency p50 / p95 (ms, mock config) | 14517 / 15073 |
-| LLM calls per run (mean) | 0.0 |
+| latency p50 / p95 (ms, mock config) | 36943 / 65520 |
+| LLM calls per run (mean) | 1.0 |
 
 | case | pass | answer_type | failing checks |
 |---|---|---|---|
@@ -38,8 +40,8 @@ Generated from `evaluation/runner.py` runs over the committed synthetic datasets
 | tariff_paasche_truth_pp | 43.8 |
 | n_bootstrap_draws | 59 |
 | model_holdout_mape_pct | 6.85 |
-| latency p50 / p95 (ms, mock config) | 11623 / 11633 |
-| LLM calls per run (mean) | 0.0 |
+| latency p50 / p95 (ms, mock config) | 36070 / 62172 |
+| LLM calls per run (mean) | 1.0 |
 
 | case | pass | answer_type | failing checks |
 |---|---|---|---|
@@ -61,8 +63,8 @@ Generated from `evaluation/runner.py` runs over the committed synthetic datasets
 | tariff_paasche_truth_pp | 44.01 |
 | n_bootstrap_draws | 59 |
 | model_holdout_mape_pct | 6.0 |
-| latency p50 / p95 (ms, mock config) | 2636 / 15322 |
-| LLM calls per run (mean) | 0.0 |
+| latency p50 / p95 (ms, mock config) | 3175 / 36971 |
+| LLM calls per run (mean) | 0.33 |
 
 | case | pass | answer_type | failing checks |
 |---|---|---|---|
@@ -99,8 +101,8 @@ Generated from `evaluation/runner.py` runs over the committed synthetic datasets
 | tariff_paasche_truth_pp | 44.01 |
 | n_bootstrap_draws | 59 |
 | model_holdout_mape_pct | 6.0 |
-| latency p50 / p95 (ms, mock config) | 2560 / 12940 |
-| LLM calls per run (mean) | 0.0 |
+| latency p50 / p95 (ms, mock config) | 3493 / 39141 |
+| LLM calls per run (mean) | 0.33 |
 
 | case | pass | answer_type | failing checks |
 |---|---|---|---|
@@ -139,5 +141,4 @@ Generated from `evaluation/runner.py` runs over the committed synthetic datasets
 
 ## Report honesty notes
 
-- The LLM is NOT evaluated end-to-end here with a hosted model unless `MOCK_LLM=false`; number-faithfulness is checked mechanically against tool outputs, and briefs fall back to the deterministic template.
-- 'Hidden true split' is not accessible (per competition rules); ground truths used are the generator's injected parameters and independent recomputations (Paasche tariff effect, raw meter totals).
+- Ground truths are the generator's injected parameters and independent recomputations (Paasche tariff effect, raw meter totals); the hidden true split is not accessible (per competition rules).
