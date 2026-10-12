@@ -6,13 +6,16 @@ recomputes anything, so it can never display a number the tools did not produce.
 from __future__ import annotations
 
 import json
+import os
 
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-API = st.secrets.get("API_URL", "http://localhost:8000") if hasattr(st, "secrets") \
-    else "http://localhost:8000"
+# API base comes from the environment (or the sidebar override below).
+# NOTE: st.secrets is NOT used — it raises StreamlitSecretNotFoundError when no
+# secrets.toml exists, which broke local/demo launches.
+API = os.environ.get("API_URL", "http://localhost:8000")
 
 
 def _api(path: str, method: str = "GET", **kw):
@@ -29,8 +32,9 @@ def _api(path: str, method: str = "GET", **kw):
 
 st.set_page_config(page_title="Factory Energy Agent", layout="wide", page_icon="⚡")
 API = st.sidebar.text_input("API base URL", value=API)
-screen = st.sidebar.radio("Screen", ["Ask & Answer", "Data & Validation", "Traces",
-                                     "Late-drop compare"])
+SCREENS = ["Ask & Answer", "Data & Validation", "Traces", "Late-drop compare"]
+_default = SCREENS.index(os.environ.get("UI_SCREEN", "")) if os.environ.get("UI_SCREEN") in SCREENS else 0
+screen = st.sidebar.radio("Screen", SCREENS, index=_default)
 
 
 def waterfall(bridge: list[dict], bill_base: float, bill_cur: float):
@@ -39,8 +43,8 @@ def waterfall(bridge: list[dict], bill_base: float, bill_cur: float):
         x=["baseline bill"] + [b["cause"] for b in bridge] + ["actual bill"],
         measure=["absolute"] + ["relative"] * len(bridge) + ["total"],
         y=[bill_base] + [b["amount"] for b in bridge] + [None],
-        text=[f"{bill_base:,.0f} €"] + [f"{b['pct_points']:+.1f} pp" for b in bridge]
-             + [f"{bill_cur:,.0f} €"],
+        text=[f"{bill_base:,.0f}"] + [f"{b['pct_points']:+.1f} pp" for b in bridge]
+             + [f"{bill_cur:,.0f}"],
         connector={"line": {"color": "#888"}},
         increasing={"marker": {"color": "#d9534f"}},
         decreasing={"marker": {"color": "#5cb85c"}},
@@ -49,6 +53,20 @@ def waterfall(bridge: list[dict], bill_base: float, bill_cur: float):
     fig.update_layout(title="Bill bridge — every bar from the verified decomposition",
                       yaxis_title="currency units", height=430)
     return fig
+
+
+def _bridge_with_amounts(res: dict) -> list[dict]:
+    """Bridge incl. currency amounts. Wire format (§6.1) carries only cause/pct_points/
+    range; amounts come from the run's trace (verified internals). Fallback: derive
+    amounts from pct_points × baseline bill so the chart stays tool-sourced either way."""
+    if not res.get("bridge"):
+        return []
+    tr, _ = _api("/trace/" + res["run_id"])
+    vbridge = ((tr or {}).get("final_answer", {}).get("vres", {}) or {}).get("bridge") or []
+    if vbridge:
+        return vbridge
+    base = ((tr or {}).get("final_answer", {}).get("vres", {}) or {}).get("bill", {}).get("base", 0.0)
+    return [{**b, "amount": b["pct_points"] / 100.0 * base} for b in res["bridge"]]
 
 
 def _recommendation_cards(recs: list[dict]):
@@ -74,9 +92,11 @@ def render_result(res: dict):
                    "quoted in a question is never taken as fact.")
     if res.get("bridge"):
         tr, _ = _api("/trace/" + res["run_id"])
-        bill_base = float(tr["final_answer"]["vres"]["bill"]["base"]) if tr else 0.0
-        bill_cur = float(tr["final_answer"]["vres"]["bill"]["current"]) if tr else 0.0
-        st.plotly_chart(waterfall(res["bridge"], bill_base, bill_cur), use_container_width=True)
+        vres = ((tr or {}).get("final_answer", {}) or {}).get("vres", {}) if tr else {}
+        bill = vres.get("bill", {}) or {}
+        st.plotly_chart(waterfall(_bridge_with_amounts(res),
+                                  float(bill.get("base", 0.0)), float(bill.get("current", 0.0))),
+                        width='stretch')
         st.dataframe(pd.DataFrame(res["bridge"]))
     _recommendation_cards(res.get("recommendations") or [])
     for a in res.get("assumptions", []):
