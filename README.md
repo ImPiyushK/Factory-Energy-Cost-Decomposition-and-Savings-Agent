@@ -117,7 +117,7 @@ without network.
   "Consistent with a compressed-air leak" is an inferred cause, labelled as such.
 * Implementation cost ranges and reduction fractions are documented assumptions
   (savings module); emission factor must come from the data card/config or the
-  CO2e field is omitted and the dependency flagged.
+  CO2 field is omitted and the dependency flagged.
 * Known edge cases handled on purpose (see validation script output in the UI):
   cumulative meters + resets, missing intervals (+30 min interpolation policy),
   duplicates, sub-meter coverage ~96.5% of main (disclosed, not rescaled), tariff
