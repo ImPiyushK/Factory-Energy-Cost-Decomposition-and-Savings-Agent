@@ -1,6 +1,6 @@
 # Factory Energy Cost Decomposition and Savings Agent
 
-A hackathon system that explains why a factory's electricity bill changed — splitting
+A hackathon system that explains why a factory's electricity bill changed splitting
 the change into **tariff, production volume, product mix, weather and unexplained
 waste** (the five parts add up to the observed change *exactly*), then detects
 controllable waste from meter evidence, and recommends actions with **kWh / money /
